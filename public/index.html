@@ -59,37 +59,43 @@
     <script>
         // Hàm Javascript để gọi xuống Backend Python
         async function getKey(gameId, buttonElement) {
-            const originalText = buttonElement.innerText;
-            buttonElement.innerText = "Đang xử lý...";
-            buttonElement.disabled = true;
-            const messageArea = document.getElementById('message-area');
-            messageArea.style.display = 'none';
+        const originalText = buttonElement.innerText;
+        buttonElement.innerText = "Đang xử lý...";
+        buttonElement.disabled = true;
+        const messageArea = document.getElementById('message-area');
+        messageArea.style.display = 'none';
 
-            try {
-                // Gọi API Python mà chúng ta đã tạo ở Bước 1
-                const response = await fetch(`/api/get-key?game=${gameId}`);
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    // Nếu thành công, mở link rút gọn trong tab mới
-                    window.open(data.link, '_blank');
-                } else {
-                    // Nếu thất bại, hiện thông báo lỗi
-                    messageArea.innerText = "Lỗi: " + data.link;
-                    messageArea.style.display = 'block';
-                    messageArea.style.color = 'red';
-                }
-
-            } catch (error) {
-                 messageArea.innerText = "Có lỗi xảy ra khi kết nối server.";
-                 messageArea.style.display = 'block';
-                 messageArea.style.color = 'red';
-            } finally {
-                // Khôi phục trạng thái nút bấm
-                buttonElement.innerText = originalText;
-                buttonElement.disabled = false;
+        try {
+            const response = await fetch(`/api/get-key?game=${gameId}`);
+            
+            // --- ĐOẠN MỚI: Kiểm tra xem Server có trả về lỗi không ---
+            if (!response.ok) {
+                const textError = await response.text(); // Đọc lỗi dạng chữ
+                throw new Error(`Server báo lỗi ${response.status}: ${textError.substring(0, 50)}...`); 
             }
+            
+            // Nếu ổn thì mới đọc JSON
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                window.open(data.link, '_blank');
+            } else {
+                messageArea.innerText = "Lỗi logic: " + data.link;
+                messageArea.style.display = 'block';
+                messageArea.style.color = 'orange';
+            }
+
+        } catch (error) {
+             // Hiện nguyên văn lỗi ra màn hình
+             console.error(error); // In vào Console để bạn F12 xem
+             messageArea.innerText = "LỖI CHẾT: " + error.message;
+             messageArea.style.display = 'block';
+             messageArea.style.color = 'red';
+        } finally {
+            buttonElement.innerText = originalText;
+            buttonElement.disabled = false;
         }
+    }
     </script>
 </body>
 </html>
