@@ -4,6 +4,7 @@ import requests
 import re
 import urllib.parse
 import json
+import os
 
 # ==========================================
 # 1. CẤU HÌNH DỮ LIỆU CÁC GAME
@@ -33,7 +34,7 @@ GAME_DATA = {
 }
 
 # API Key của bạn (Vẫn cảnh báo: nên dùng biến môi trường trên Vercel để bảo mật)
-MY_API_KEY = "67fe08df2741353b9475dd73"
+MY_API_KEY = os.environ.get("LINK4M_API_KEY")
 
 # ==========================================
 # 2. LOGIC CŨ CỦA BẠN (GIỮ NGUYÊN)
@@ -119,4 +120,5 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(response_data).encode('utf-8'))
 
         return
+
 
