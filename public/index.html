@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Mod Hub VIP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hệ Thống Phân Phối Mod VIP</h1>
+        <p class="subtitle">Chọn game để tải hack hoặc lấy key kích hoạt</p>
+        
+        <div class="game-grid">
+            <div class="game-card pubg">
+                <h2>PUBG Mobile</h2>
+                <div class="actions">
+                    <a href="LINK_MEDIAFIRE_PUBG_CUA_BAN" target="_blank" class="btn download">Tải Hack</a>
+                    <button onclick="getKey('pubg', this)" class="btn get-key">Lấy Key</button>
+                </div>
+            </div>
+
+            <div class="game-card ff">
+                <h2>Free Fire</h2>
+                <div class="actions">
+                    <a href="LINK_MEDIAFIRE_FF_CUA_BAN" target="_blank" class="btn download">Tải Hack</a>
+                    <button onclick="getKey('freefire', this)" class="btn get-key">Lấy Key</button>
+                </div>
+            </div>
+
+             <div class="game-card lq">
+                <h2>Liên Quân Mobile</h2>
+                <div class="actions">
+                    <a href="LINK_MEDIAFIRE_LQ_CUA_BAN" target="_blank" class="btn download">Tải Hack</a>
+                    <button onclick="getKey('lienquan', this)" class="btn get-key">Lấy Key</button>
+                </div>
+            </div>
+
+            <div class="game-card df">
+                <h2>Delta Force</h2>
+                <div class="actions">
+                    <a href="LINK_MEDIAFIRE_DF_CUA_BAN" target="_blank" class="btn download">Tải Hack</a>
+                    <button onclick="getKey('deltaforce', this)" class="btn get-key">Lấy Key</button>
+                </div>
+            </div>
+
+             <div class="game-card bs">
+                <h2>Blood Strike</h2>
+                <div class="actions">
+                    <a href="LINK_MEDIAFIRE_BS_CUA_BAN" target="_blank" class="btn download">Tải Hack</a>
+                    <button onclick="getKey('bloodstrike', this)" class="btn get-key">Lấy Key</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="message-area"></div>
+    </div>
+
+    <script>
+        // Hàm Javascript để gọi xuống Backend Python
+        async function getKey(gameId, buttonElement) {
+            const originalText = buttonElement.innerText;
+            buttonElement.innerText = "Đang xử lý...";
+            buttonElement.disabled = true;
+            const messageArea = document.getElementById('message-area');
+            messageArea.style.display = 'none';
+
+            try {
+                // Gọi API Python mà chúng ta đã tạo ở Bước 1
+                const response = await fetch(`/api/get-key?game=${gameId}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Nếu thành công, mở link rút gọn trong tab mới
+                    window.open(data.link, '_blank');
+                } else {
+                    // Nếu thất bại, hiện thông báo lỗi
+                    messageArea.innerText = "Lỗi: " + data.link;
+                    messageArea.style.display = 'block';
+                    messageArea.style.color = 'red';
+                }
+
+            } catch (error) {
+                 messageArea.innerText = "Có lỗi xảy ra khi kết nối server.";
+                 messageArea.style.display = 'block';
+                 messageArea.style.color = 'red';
+            } finally {
+                // Khôi phục trạng thái nút bấm
+                buttonElement.innerText = originalText;
+                buttonElement.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
